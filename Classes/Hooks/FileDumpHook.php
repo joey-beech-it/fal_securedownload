@@ -322,7 +322,10 @@ class FileDumpHook extends AbstractApplication implements FileDumpEIDHookInterfa
     protected function initializeUserAuthentication()
     {
         if ($this->feUser === null) {
-            $this->feUser = $GLOBALS['TSFE']->fe_user;
+          //  $this->feUser = $GLOBALS['TSFE']->fe_user;
+            $this->feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+            $this->feUser->start();
+            $this->feUser->unpack_uc();
             $this->feUser->fetchGroupData();
         }
     }

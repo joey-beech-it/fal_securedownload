@@ -28,7 +28,7 @@ use BeechIt\FalSecuredownload\Service\LeafStateService;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
-
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 /**
  * Class LeaveStateViewHelper
  *
@@ -53,7 +53,10 @@ class LeaveStateViewHelper extends AbstractConditionViewHelper
         $folder = $arguments['folder'];
 
         $leafStateService = GeneralUtility::makeInstance(LeafStateService::class);
-        $feUser = !empty($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->fe_user : false;
+      //  $feUser = !empty($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->fe_user : false;
+        $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $feUser->start();
+        $feUser->unpack_uc();
 
         return $feUser && $leafStateService->getLeafStateForUser($feUser, $folder->getCombinedIdentifier());
     }

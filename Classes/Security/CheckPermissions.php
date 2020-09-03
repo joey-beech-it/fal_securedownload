@@ -33,6 +33,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Utility functions to check permissions
@@ -68,7 +69,11 @@ class CheckPermissions implements SingletonInterface
      */
     public function checkFileAccessForCurrentFeUser($file)
     {
-        $userFeGroups = !isset($GLOBALS['TSFE']->fe_user->user) ? false : $GLOBALS['TSFE']->fe_user->groupData['uid'];
+        //$userFeGroups = !isset($GLOBALS['TSFE']->fe_user->user) ? false : $GLOBALS['TSFE']->fe_user->groupData['uid'];
+        $this->feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $this->feUser->start();
+        $this->feUser->unpack_uc();
+        $userFeGroups = $this->feUser->fetchGroupData();
         return $this->checkFileAccess($file, $userFeGroups);
     }
 
